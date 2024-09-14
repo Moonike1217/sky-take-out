@@ -6,40 +6,40 @@
         update employee
         <set>
             <if test="name != null">
-                name = #{name}
+                name = #{name},
             </if>
             <if test="username != null">
-                username = #{username}
+                username = #{username},
             </if>
             <if test="password != null">
-                password = #{password}
+                password = #{password},
             </if>
             <if test="phone != null">
-                phone = #{phone}
+                phone = #{phone},
             </if>
             <if test="sex != null">
-                sex = #{sex}
+                sex = #{sex},
             </if>
             <if test="idNumber != null">
-                id_number = #{idNumber}
+                id_number = #{idNumber},
             </if>
             <if test="status != null">
-                status = #{status}
+                status = #{status},
             </if>
             <if test="createTime != null">
-                create_time = #{createTime}
+                create_time = #{createTime},
             </if>
             <if test="updateTime != null">
-                update_time = #{updateTime}
+                update_time = #{updateTime},
             </if>
             <if test="createUser != null">
-                create_user = #{createUser}
+                create_user = #{createUser},
             </if>
             <if test="updateUser != null">
                 update_user = #{updateUser}
             </if>
-            where id = #{id}
         </set>
+        where id = #{id}
     </update>
 
     <select id="pageQuery" resultType="com.sky.entity.Employee">
