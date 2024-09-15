@@ -83,13 +83,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         //设置账号状态为正常
         employee.setStatus(StatusConstant.ENABLE);
 
-        //设置创建时间和修改时间(均为当前时间)
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-
-        //设置创建人和修改人均为当前用户 使用ThreadLocal
-        employee.setCreateUser(BaseContext.getCurrentId());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        //设置创建时间和修改时间(均为当前时间)
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
+//
+//        //设置创建人和修改人均为当前用户 使用ThreadLocal
+//        employee.setCreateUser(BaseContext.getCurrentId());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.insert(employee);
     }
@@ -144,9 +144,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         //拷贝相同属性
         BeanUtils.copyProperties(employeeDTO, employee);
 
-        //更新信息:编辑人和编辑时间
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        //更新信息:编辑人和编辑时间
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
 
         //调用mapper接口实现SQL操作
         employeeMapper.update(employee);
