@@ -8,7 +8,10 @@ import com.sky.enumeration.OperationType;
 import com.sky.vo.DishVO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface DishMapper {
@@ -34,6 +37,20 @@ public interface DishMapper {
      * @return
      */
     Page<DishVO> pageQuery(DishPageQueryDTO dishPageQueryDTO);
+
+    /**
+     * 根据菜品的主键id查询菜品
+     * @param id
+     * @return
+     */
+    @Select("select * from sky_take_out. dish where dish.id = #{id};")
+    Dish getById(Long id);
+
+    /**
+     * 根据ids批量删除菜品
+     * @param ids
+     */
+    void deleteByIds(@Param("ids") List<Long> ids);
 
 
 //    @Insert("insert into dish (name, category_id, price, image, description, create_time, update_time, create_user, update_user) " +

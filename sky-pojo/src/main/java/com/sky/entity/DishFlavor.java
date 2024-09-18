@@ -21,7 +21,7 @@ public class DishFlavor implements Serializable {
     //主键
     private Long id;
 
-    //菜品id
+    //菜品id(对应菜品表中的id列)
     private Long dishId;
 
     //口味名称
