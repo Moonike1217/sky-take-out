@@ -18,6 +18,7 @@ import com.sky.vo.DishVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,5 +110,18 @@ public class DishServiceImpl implements DishService {
 
         //删除菜品对应风味
         dishFlavorMapper.deleteByDishIds(ids);
+    }
+
+    /**
+     * 根据id查询对应菜品
+     * @param id
+     * @return
+     */
+    @Override
+    public DishVO getById(String id) {
+        Dish dish = dishMapper.getById(Long.valueOf(id));
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(dish, dishVO);
+        return dishVO;
     }
 }
