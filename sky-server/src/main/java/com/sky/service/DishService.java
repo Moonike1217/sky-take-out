@@ -5,6 +5,7 @@ import com.sky.dto.DishPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.vo.DishVO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface DishService {
@@ -33,4 +34,18 @@ public interface DishService {
      * @return
      */
     DishVO getById(String id);
+
+    /**
+     * 修改菜品
+     * @param dishDTO
+     */
+    void updateWithFlavor(DishDTO dishDTO);
+
+    /**
+     * 更新菜品起售停售状态
+     *
+     * @param id
+     * @param status
+     */
+    void updateStatus(String id, String status);
 }

@@ -8,6 +8,12 @@
                 (#{df.dishId}, #{df.name}, #{df.value})
             </foreach>
     </insert>
+    <update id="updateFlavor">
+        update sky_take_out.dish_flavor
+        <set>
+
+        </set>
+    </update>
     <delete id="deleteByDishIds">
         delete
         from sky_take_out.dish_flavor

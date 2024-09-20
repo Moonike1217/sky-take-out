@@ -21,4 +21,10 @@ public interface DishFlavorMapper {
      * @param ids
      */
     void deleteByDishIds(List<Long> ids);
+
+    /**
+     * 修改菜品风味
+     * @param flavors
+     */
+    void updateFlavor(List<DishFlavor> flavors);
 }

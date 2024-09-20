@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.github.pagehelper.Page;
+import com.sky.constant.MessageConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.result.PageResult;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -27,9 +29,9 @@ public class DishController {
     private DishServiceImpl dishService;
 
     @PostMapping
-    @ApiOperation("新增菜品")
+    @ApiOperation("新增菜品及其风味")
     public Result save(@RequestBody DishDTO dishDTO) {
-        log.info("新增菜品:{}", dishDTO);
+        log.info("新增菜品及其风味:{}", dishDTO);
         dishService.saveWithFlavor(dishDTO);
         return Result.success(dishDTO);
     }
@@ -59,4 +61,19 @@ public class DishController {
         return Result.success(dishVO);
     }
 
+    @PutMapping
+    @ApiOperation("修改菜品")
+    public Result updateWithFlavor(@RequestBody DishDTO dishDTO) {
+        log.info("修改菜品及其口味:{}", dishDTO);
+        dishService.updateWithFlavor(dishDTO);
+        return Result.success();
+    }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("菜品状态修改(起售/停售)")
+    public Result updateStatus(@PathVariable String status, String id) {
+        log.info("将菜品{}的状态设置为:{}", id, status);
+        dishService.updateStatus(id, status);
+        return Result.success();
+    }
 }

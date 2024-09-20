@@ -6,11 +6,9 @@ import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.enumeration.OperationType;
 import com.sky.vo.DishVO;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -52,10 +50,11 @@ public interface DishMapper {
      */
     void deleteByIds(@Param("ids") List<Long> ids);
 
+    /**
+     * 修改菜品
+     * @param dish
+     */
+    @AutoFill(OperationType.UPDATE)
+    void update(Dish dish);
 
-//    @Insert("insert into dish (name, category_id, price, image, description, create_time, update_time, create_user, update_user) " +
-//            "values " +
-//            "(#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})")
-//    @AutoFill(value = OperationType.INSERT)
-//    void insert(Dish dish);
 }

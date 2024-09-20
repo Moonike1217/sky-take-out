@@ -18,10 +18,10 @@ import com.sky.vo.DishVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +40,7 @@ public class DishServiceImpl implements DishService {
     private SetmealDishMapper setmealDishMapper;
 
     /**
-     * 新增菜品
+     * 新增菜品及其风味
      * @param dishDTO
      */
     @Override
@@ -123,5 +123,42 @@ public class DishServiceImpl implements DishService {
         DishVO dishVO = new DishVO();
         BeanUtils.copyProperties(dish, dishVO);
         return dishVO;
+    }
+
+    /**
+     * 修改菜品
+     * @param dishDTO
+     */
+    @Override
+    @Transactional
+    public void updateWithFlavor(DishDTO dishDTO) {
+        //拷贝菜品基本信息
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+
+        //拷贝菜品风味信息
+        List<DishFlavor> dishFlavors = dishDTO.getFlavors();
+
+        //修改菜品基本信息
+        dishMapper.update(dish);
+
+        //得到修改的菜品信息的主键值(id)
+        Long id = dish.getId();
+
+        //遍历风味列表,为每个flavor列表的dishId赋值
+        dishFlavors.forEach(dishFlavor -> {
+            dishFlavor.setDishId(id);
+        });
+
+        //批量插入(插入 n 条风味信息)
+        dishFlavorMapper.insertBatch(dishFlavors);
+    }
+
+    @Override
+    public void updateStatus(String id, String status) {
+        Dish dish = new Dish();
+        dish.setId(Long.valueOf(id));
+        dish.setStatus(Integer.valueOf(status));
+        dishMapper.update(dish);
     }
 }
