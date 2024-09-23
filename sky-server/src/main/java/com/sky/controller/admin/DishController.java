@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.sky.constant.MessageConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
+import com.sky.entity.Dish;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
@@ -75,5 +76,13 @@ public class DishController {
         log.info("将菜品{}的状态设置为:{}", id, status);
         dishService.updateStatus(id, status);
         return Result.success();
+    }
+
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询菜品")
+    public Result<List<Dish>> list(String categoryId) {
+        log.info("查询分类id为 {} 的菜品", categoryId);
+        List<Dish> dishList = dishService.getByCategoryId(Long.valueOf(categoryId));
+        return Result.success(dishList);
     }
 }

@@ -8,6 +8,7 @@
             values
             (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
     </insert>
+
     <update id="update">
         update sky_take_out.dish
         <set>
@@ -68,5 +69,21 @@
                 and d.status = #{status}
             </if>
         </where>
+    </select>
+
+    <select id="list" resultType="com.sky.entity.Dish">
+        select * from sky_take_out.dish d
+        <where>
+            <if test="name != null">
+                d.name like concat('%', #{name}, '%')
+            </if>
+            <if test="categoryId != null">
+                and d.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and d.status = #{status}
+            </if>
+        </where>
+        order by create_time desc
     </select>
 </mapper>
