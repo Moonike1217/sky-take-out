@@ -5,6 +5,14 @@
         insert into sky_take_out.setmeal (category_id, name, price, status, description, image, create_time, update_time, create_user, update_user)
         VALUES (#{categoryId}, #{name}, #{price}, #{status}, #{description}, #{image}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
     </insert>
+
+    <delete id="deleteById">
+        delete from sky_take_out.setmeal where id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
     <select id="pageQuery" resultType="com.sky.vo.SetmealVO">
         select * from sky_take_out.setmeal
         <where>

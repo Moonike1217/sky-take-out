@@ -6,8 +6,11 @@ import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.enumeration.OperationType;
 import com.sky.vo.SetmealVO;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface SetmealMapper {
@@ -33,4 +36,18 @@ public interface SetmealMapper {
      */
     @AutoFill(OperationType.INSERT)
     void insert(Setmeal setmeal);
+
+    /**
+     * 根据套餐id进行查询
+     * @param id
+     * @return
+     */
+    @Select("select * from sky_take_out.setmeal where id = #{id}")
+    Setmeal getById(Long id);
+
+    /**
+     * 根据套餐id删除套餐
+     * @param ids
+     */
+    void deleteById(List<Long> ids);
 }
