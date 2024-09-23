@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class SetmealDTO implements Serializable {
-
+    //套餐id
     private Long id;
 
     //分类id
