@@ -13,12 +13,14 @@ import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetmealService;
+import com.sky.vo.DishItemVO;
 import com.sky.vo.SetmealVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -86,5 +88,84 @@ public class SetmealServiceImpl implements SetmealService {
         setmealMapper.deleteById(ids);
         setmealDishMapper.deleteBySetmealId(ids);
 
+    }
+
+    /**
+     * 修改套餐
+     * @param setmealDTO
+     * @return
+     */
+    @Override
+    public void update(SetmealDTO setmealDTO) {
+        List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(setmealDTO, setmeal);
+
+        //修改套餐数据
+        setmealMapper.update(setmeal);
+
+        if (setmealDishes != null && !setmealDishes.isEmpty()) {
+            //删除原套餐-菜品表中的数据
+            setmealDishMapper.deleteBySetmealId(Collections.singletonList(setmeal.getId()));
+
+            //将套餐内的新菜品赋上套餐id
+            Long setmealId = setmeal.getId();
+            for (SetmealDish setmealDish : setmealDishes) {
+                setmealDish.setSetmealId(setmealId);
+            }
+
+            //插入套餐内的新菜品
+            setmealDishMapper.insertBatch(setmealDishes);
+        }
+
+
+    }
+
+    /**
+     * 根据id查询套餐
+     * @param id
+     * @return
+     */
+    @Override
+    public SetmealVO getById(Long id) {
+        Setmeal setmeal = setmealMapper.getById(id);
+        List<SetmealDish> setmealDishes = setmealDishMapper.getDishesBySetmealIds(Collections.singletonList(id));
+        SetmealVO setmealVO = new SetmealVO();
+        BeanUtils.copyProperties(setmeal, setmealVO);
+        setmealVO.setSetmealDishes(setmealDishes);
+        return setmealVO;
+    }
+
+    /**
+     * 更改套餐售卖状态
+     *
+     * @param status
+     */
+    @Override
+    public void updateStatus(Long id, Integer status) {
+        Setmeal setmeal = Setmeal.builder()
+                        .status(status)
+                        .id(id)
+                        .build();
+        setmealMapper.update(setmeal);
+    }
+
+    /**
+     * 条件查询
+     * @param setmeal
+     * @return
+     */
+    public List<Setmeal> list(Setmeal setmeal) {
+        List<Setmeal> list = setmealMapper.list(setmeal);
+        return list;
+    }
+
+    /**
+     * 根据id查询菜品选项
+     * @param id
+     * @return
+     */
+    public List<DishItemVO> getDishItemById(Long id) {
+        return setmealMapper.getDishItemBySetmealId(id);
     }
 }

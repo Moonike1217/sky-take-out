@@ -21,4 +21,10 @@
             #{dishId}
         </foreach>
     </select>
+    <select id="getDishesBySetmealIds" resultType="com.sky.entity.SetmealDish">
+        select * from sky_take_out.setmeal_dish where setmeal_id in
+        <foreach collection="ids" open="(" separator="," close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

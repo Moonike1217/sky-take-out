@@ -11,3 +11,12 @@ sky:
     access-key-id:
     access-key-secret:
     bucket-name: sky-itcast-moonike
+  redis:
+    host: localhost
+    password: 123456
+    port: 6379
+    database: 10
+  wechat:
+    appid: wx5611cc754de5044b
+    secret: cd5fb77f030731d5d493d7998738766f
+
