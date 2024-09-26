@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -120,8 +121,14 @@ public class DishServiceImpl implements DishService {
     @Override
     public DishVO getById(String id) {
         Dish dish = dishMapper.getById(Long.valueOf(id));
+        if (Objects.equals(dish.getStatus(), StatusConstant.ENABLE)) {
+            //菜品处于销售状态
+            throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE_CANNOT_UPDATE);
+        }
         DishVO dishVO = new DishVO();
         BeanUtils.copyProperties(dish, dishVO);
+        List<DishFlavor> flavors = dishFlavorMapper.getByDishId(Long.valueOf(id));
+        dishVO.setFlavors(flavors);
         return dishVO;
     }
 
@@ -136,22 +143,26 @@ public class DishServiceImpl implements DishService {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
 
-        //拷贝菜品风味信息
-        List<DishFlavor> dishFlavors = dishDTO.getFlavors();
-
         //修改菜品基本信息
         dishMapper.update(dish);
 
-        //得到修改的菜品信息的主键值(id)
-        Long id = dish.getId();
+        //拷贝菜品风味信息
+        List<DishFlavor> dishFlavors = dishDTO.getFlavors();
 
-        //遍历风味列表,为每个flavor列表的dishId赋值
-        dishFlavors.forEach(dishFlavor -> {
-            dishFlavor.setDishId(id);
-        });
+        if (dishFlavors != null && dishFlavors.size() > 0) {
+            //得到修改的菜品信息的主键值(id)
+            Long id = dish.getId();
 
-        //批量插入(插入 n 条风味信息)
-        dishFlavorMapper.insertBatch(dishFlavors);
+            //遍历风味列表,为每个flavor列表的dishId赋值
+            dishFlavors.forEach(dishFlavor -> {
+                dishFlavor.setDishId(id);
+            });
+
+            //删除菜品对应风味
+            dishFlavorMapper.deleteByDishIds(Collections.singletonList(dishDTO.getId()));
+            //批量插入(插入 n 条风味信息)
+            dishFlavorMapper.insertBatch(dishFlavors);
+        }
     }
 
     @Override

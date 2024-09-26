@@ -23,11 +23,11 @@ public interface DishFlavorMapper {
      */
     void deleteByDishIds(List<Long> ids);
 
-    /**
-     * 修改菜品风味
-     * @param flavors
-     */
-    void updateFlavor(List<DishFlavor> flavors);
+//    /**
+//     * 修改菜品风味
+//     * @param flavors
+//     */
+//    void updateFlavor(List<DishFlavor> flavors);
 
     /**
      * 根据菜品id查询菜品风味

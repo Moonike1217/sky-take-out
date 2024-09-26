@@ -26,4 +26,5 @@ public class MessageConstant {
     public static final String ALREADY_EXISTS = "已存在";
     public static final String ACCOUNT = "账号";
     public static final String STATUS_UPDATE_SUCCESSFULLY = "状态修改成功";
+    public static final String DISH_ON_SALE_CANNOT_UPDATE = "起售中的菜品不能修改";
 }
