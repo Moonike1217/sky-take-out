@@ -121,10 +121,10 @@ public class DishServiceImpl implements DishService {
     @Override
     public DishVO getById(String id) {
         Dish dish = dishMapper.getById(Long.valueOf(id));
-        if (Objects.equals(dish.getStatus(), StatusConstant.ENABLE)) {
-            //菜品处于销售状态
-            throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE_CANNOT_UPDATE);
-        }
+//        if (Objects.equals(dish.getStatus(), StatusConstant.ENABLE)) {
+//            //菜品处于销售状态
+//            throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE_CANNOT_UPDATE);
+//        }
         DishVO dishVO = new DishVO();
         BeanUtils.copyProperties(dish, dishVO);
         List<DishFlavor> flavors = dishFlavorMapper.getByDishId(Long.valueOf(id));
