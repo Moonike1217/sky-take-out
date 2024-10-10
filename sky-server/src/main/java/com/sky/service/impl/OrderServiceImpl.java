@@ -329,4 +329,38 @@ public class OrderServiceImpl implements OrderService {
         submit(ordersSubmitDTO);
         return;
     }
+
+    /**
+     * 管理端订单搜索
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
+        //PageHelper初始化
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+        //调用OrdersMapper查询相关订单
+        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
+        //分页查询应当通过VO返回结果
+        List<OrderVO> orderVOList = new ArrayList<>();
+        //遍历page
+        if (page != null && !page.isEmpty()) {
+            for (Orders orders : page) {
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(orders, orderVO);
+                //填充orderDishes字段
+                List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
+                List<String> strings = orderDetailList.stream().map(x -> {
+                    //菜品*份数 (如: 宫保鸡丁*3)
+                    return x.getName() + "*" + x.getNumber();
+                }).collect(Collectors.toList());
+                orderVO.setOrderDishes(strings.toString());
+                //将当前封装好的orderVO添加到List中
+                orderVOList.add(orderVO);
+            }
+        }
+
+        return new PageResult(page.getTotal(), orderVOList);
+    }
 }
+
