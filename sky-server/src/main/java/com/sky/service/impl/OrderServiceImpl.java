@@ -6,10 +6,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
-import com.sky.dto.OrdersPageQueryDTO;
-import com.sky.dto.OrdersPaymentDTO;
-import com.sky.dto.OrdersSubmitDTO;
-import com.sky.dto.ShoppingCartDTO;
+import com.sky.dto.*;
 import com.sky.entity.*;
 import com.sky.exception.AddressBookBusinessException;
 import com.sky.exception.OrderBusinessException;
@@ -179,8 +176,11 @@ public class OrderServiceImpl implements OrderService {
         // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
         Orders orders = Orders.builder()
                 .id(ordersDB.getId())
+                //修改订单状态为待接单
                 .status(Orders.TO_BE_CONFIRMED)
+                //修改支付状态为已支付
                 .payStatus(Orders.PAID)
+                //修改结账时间为当前
                 .checkoutTime(LocalDateTime.now())
                 .build();
 
@@ -239,11 +239,11 @@ public class OrderServiceImpl implements OrderService {
     public OrderVO detail(Long id) {
         //定义VO
         OrderVO orderVO = new OrderVO();
-        //查询出订单信息和订单明细
+        //封装订单信息
         Orders orders = orderMapper.getById(id);
-        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
-        //将订单信息和订单明细封装到VO中
         BeanUtils.copyProperties(orders, orderVO);
+        //封装订单明细
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
         orderVO.setOrderDetailList(orderDetailList);
         //返回VO
         return orderVO;
@@ -382,6 +382,50 @@ public class OrderServiceImpl implements OrderService {
         orderStatisticsVO.setConfirmed(confirmed);
         orderStatisticsVO.setDeliveryInProgress(deliveryInProgress);
         return orderStatisticsVO;
+    }
+
+    /**
+     * 接单
+     * @param ordersConfirmDTO
+     */
+    @Override
+    public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
+        //修改订单状态为CONFIRMED = 3(已接单)
+//        orderMapper.confirm(Math.toIntExact(ordersConfirmDTO.getId()));
+
+        Orders orders = Orders.builder()
+                .id(ordersConfirmDTO.getId())
+                .status(Orders.CONFIRMED)
+                .build();
+
+        orderMapper.update(orders);
+    }
+
+    @Override
+    public void rejection(OrdersRejectionDTO ordersRejectionDTO) {
+        Orders ordersDB = orderMapper.getById(ordersRejectionDTO.getId());
+
+        //只有订单存在并且订单状态为待接单时才能够拒单
+        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        //如果用户已支付则需要退款
+        if (ordersDB.getPayStatus().equals(Orders.PAID)) {
+            //执行退款逻辑...
+            log.info("商家拒单，退款");
+        }
+
+        Orders orders = Orders.builder()
+                .id(ordersRejectionDTO.getId())
+                .rejectionReason(ordersRejectionDTO.getRejectionReason())
+                .status(Orders.CANCELLED)
+                .payStatus(Orders.REFUND)
+                .cancelReason("商家拒单")
+                .cancelTime(LocalDateTime.now())
+                .build();
+
+        orderMapper.update(orders);
     }
 }
 

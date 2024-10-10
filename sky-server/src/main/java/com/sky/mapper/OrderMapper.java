@@ -6,6 +6,7 @@ import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface OrderMapper {
@@ -58,4 +59,11 @@ public interface OrderMapper {
      */
     @Select("select count(sky_take_out.orders.id) from sky_take_out.orders where status = #{status};")
     Integer countStatus(Integer status);
+
+    /**
+     * 接单
+     * @param id
+     */
+    @Update("update sky_take_out.orders set status = 3 where id = #{id}")
+    void confirm(Integer id);
 }
