@@ -2,6 +2,8 @@ package com.sky.service.impl;
 
 import com.sky.context.BaseContext;
 import com.sky.dto.ShoppingCartDTO;
+import com.sky.entity.Dish;
+import com.sky.entity.Setmeal;
 import com.sky.entity.ShoppingCart;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealMapper;
@@ -42,14 +44,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         if (dishId == null) {
             //添加的是套餐
-            shoppingCart.setName(setmealMapper.getById(SetmealId).getName());
-            shoppingCart.setAmount(setmealMapper.getById(SetmealId).getPrice());
-            shoppingCart.setImage(setmealMapper.getById(SetmealId).getImage());
+            Setmeal setmeal = setmealMapper.getById(SetmealId);
+            shoppingCart.setName(setmeal.getName());
+            shoppingCart.setAmount(setmeal.getPrice());
+            shoppingCart.setImage(setmeal.getImage());
         } else {
             //添加的是菜品
-            shoppingCart.setName(dishMapper.getById(dishId).getName());
-            shoppingCart.setAmount(dishMapper.getById(dishId).getPrice());
-            shoppingCart.setImage(dishMapper.getById(dishId).getImage());
+            Dish dish = dishMapper.getById(dishId);
+            shoppingCart.setName(dish.getName());
+            shoppingCart.setAmount(dish.getPrice());
+            shoppingCart.setImage(dish.getImage());
         }
 
         //设置createTime UserId

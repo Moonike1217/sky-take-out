@@ -1,6 +1,7 @@
 package com.sky.dto;
 
 import com.sky.entity.OrderDetail;
+import com.sky.entity.Orders;
 import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -51,6 +52,6 @@ public class OrdersDTO implements Serializable {
     //收货人
     private String consignee;
 
-    private List<OrderDetail> orderDetails;
+    private List<Orders> orderDetails;
 
 }
