@@ -362,5 +362,26 @@ public class OrderServiceImpl implements OrderService {
 
         return new PageResult(page.getTotal(), orderVOList);
     }
+
+    /**
+     * 统计各状态订单数量
+     * @return
+     */
+    @Override
+    public OrderStatisticsVO statistics() {
+        //订单状态  2待接单 3已接单 4派送中
+        //待接单数量 private Integer toBeConfirmed;
+        //待派送(已接单)数量 private Integer confirmed;
+        //派送中数量 private Integer deliveryInProgress;
+        Integer toBeConfirmed = orderMapper.countStatus(OrderVO.TO_BE_CONFIRMED);
+        Integer confirmed = orderMapper.countStatus(OrderVO.CONFIRMED);
+        Integer deliveryInProgress = orderMapper.countStatus(OrderVO.DELIVERY_IN_PROGRESS);
+
+        OrderStatisticsVO orderStatisticsVO = new OrderStatisticsVO();
+        orderStatisticsVO.setToBeConfirmed(toBeConfirmed);
+        orderStatisticsVO.setConfirmed(confirmed);
+        orderStatisticsVO.setDeliveryInProgress(deliveryInProgress);
+        return orderStatisticsVO;
+    }
 }
 

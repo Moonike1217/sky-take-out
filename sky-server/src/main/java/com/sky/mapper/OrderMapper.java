@@ -50,4 +50,12 @@ public interface OrderMapper {
      */
     @Delete("delete from sky_take_out.orders where id = #{id}")
     void deleteById(Long id);
+
+    /**
+     * 统计指定状态的订单数量
+     * @param status
+     * @return
+     */
+    @Select("select count(sky_take_out.orders.id) from sky_take_out.orders where status = #{status};")
+    Integer countStatus(Integer status);
 }
