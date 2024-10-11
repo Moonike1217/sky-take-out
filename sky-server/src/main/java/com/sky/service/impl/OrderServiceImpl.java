@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.github.pagehelper.Page;
@@ -20,6 +21,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.BeanUtils;
@@ -30,9 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.DoubleStream.builder;
@@ -61,6 +61,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private ShoppingCartService shoppingCartService;
+
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     /**
      * 新建订单
@@ -186,6 +189,19 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(orders);
+
+        //通过WebSocketServer向客户端浏览器推送信息 含有三个字段:type orderId content 以JSON格式推送
+        //先建立一个Map
+        Map map = new HashMap<>();
+        //数据类型 1为来单提醒 2为催单
+        map.put("type", 1);
+        //订单id
+        map.put("orderId", ordersDB.getId());
+        //提醒内容
+        map.put("content", "订单号: " + outTradeNo);
+
+        String json = JSONObject.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
     }
 
     /**
